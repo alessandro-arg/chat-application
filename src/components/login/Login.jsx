@@ -2,7 +2,10 @@ import "./login.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { auth, db, storage } from "../../lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import upload from "../../lib/upload";
 
@@ -65,8 +68,32 @@ const Login = () => {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.target);
+    const { email, password } = Object.fromEntries(formData);
+
+    try {
+      await toast.promise(
+        (async () => {
+          const response = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+        })(),
+        {
+          pending: "Loggin in...",
+          success: "Succefully logged in",
+          error: "Something went wrong",
+        }
+      );
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
