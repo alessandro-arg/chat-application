@@ -4,12 +4,15 @@ import { toast } from "react-toastify";
 import { auth, db, storage } from "../../lib/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import upload from "../../lib/upload";
 
 const Login = () => {
   const [avatar, setAvatar] = useState({
     file: null,
     url: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
@@ -22,31 +25,43 @@ const Login = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData(e.target);
     const { username, email, password } = Object.fromEntries(formData);
 
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
+      await toast.promise(
+        (async () => {
+          const response = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          const imgUrl = await upload(avatar.file);
+
+          await setDoc(doc(db, "users", response.user.uid), {
+            username,
+            email,
+            avatar: imgUrl,
+            id: response.user.uid,
+            blocked: [],
+          });
+
+          await setDoc(doc(db, "userchats", response.user.uid), {
+            chats: [],
+          });
+        })(),
+        {
+          pending: "Creating account...",
+          success: "Account created successfully",
+          error: "Something went wrong",
+        }
       );
-
-      await setDoc(doc(db, "users", response.user.uid), {
-        username,
-        email,
-        id: response.user.uid,
-        blocked: [],
-      });
-
-      await setDoc(doc(db, "userchats", response.user.uid), {
-        chats: [],
-      });
-
-      toast.success("Account created successfully");
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message);
+    } catch (err) {
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,7 +76,9 @@ const Login = () => {
         <form onSubmit={handleLogin}>
           <input type="text" placeholder="Email" name="email" />
           <input type="password" placeholder="Password" name="password" />
-          <button>Sign in</button>
+          <button disabled={loading}>
+            {loading ? "Loading.." : "Sign in"}
+          </button>
         </form>
       </div>
       <div className="separator"></div>
@@ -81,7 +98,9 @@ const Login = () => {
           <input type="text" placeholder="Username" name="username" />
           <input type="text" placeholder="Email" name="email" />
           <input type="password" placeholder="Password" name="password" />
-          <button>Sign up</button>
+          <button disabled={loading}>
+            {loading ? "Loading.." : "Sign up"}
+          </button>
         </form>
       </div>
     </div>

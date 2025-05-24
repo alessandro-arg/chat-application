@@ -54,6 +54,13 @@
         border-radius: 5px;
         cursor: pointer;
         font-weight: 500;
+
+        &:disabled {
+          background-color: #489de7c4;
+          color: #ccc;
+          cursor: default;
+          pointer-events: none;
+        }
       }
     }
   }
