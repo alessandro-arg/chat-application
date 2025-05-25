@@ -1,8 +1,15 @@
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
 import { useEffect, useState, useRef } from "react";
-import { onSnapshot, doc } from "firebase/firestore";
+import {
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../../lib/firebase";
+import useUserStore from "../../lib/user-store";
 import useChatStore from "../../lib/chat-store";
 
 const Chat = () => {
@@ -10,7 +17,8 @@ const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
 
-  const { chatId } = useChatStore();
+  const { currentUser } = useUserStore();
+  const { chatId, user } = useChatStore();
 
   const endRef = useRef(null);
 
@@ -35,6 +43,47 @@ const Chat = () => {
     setOpen(false);
   };
 
+  const handleSend = async () => {
+    if (text === "") {
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, "chats", chatId), {
+        messages: arrayUnion({
+          senderId: currentUser.id,
+          text,
+          createdAt: new Date(),
+        }),
+      });
+
+      const userIDs = [currentUser.id, user.id];
+
+      userIDs.forEach(async (id) => {
+        const userChatRef = doc(db, "userchats", id);
+        const userChatsSnapshot = await getDoc(userChatRef);
+
+        if (userChatsSnapshot.exists()) {
+          const userChatsData = userChatsSnapshot.data();
+          const chatIndex = userChatsData.chats.findIndex(
+            (c) => c.chatId === chatId
+          );
+
+          userChatsData.chats[chatIndex].lastMessage = text;
+          userChatsData.chats[chatIndex].isSeen =
+            id === currentUser.id ? true : false;
+          userChatsData.chats[chatIndex].updatedAt = Date.now();
+
+          await updateDoc(userChatRef, {
+            chats: userChatsData.chats,
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="chat">
       <div className="top">
@@ -56,65 +105,16 @@ const Chat = () => {
         </div>
       </div>
       <div className="center">
-        <div className="message">
-          <img src="./avatar.png" alt="" />
-          <div className="texts">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-              adipisci quae incidunt inventore velit nisi pariatur asperiores
-              fugiat sint obcaecati neque tempore, cupiditate corrupti
-              aspernatur impedit ipsum quia corporis temporibus.
-            </p>
-            <span>1 min ago</span>
+        {chat?.messages?.map((message) => (
+          <div className="message own" key={message?.createdAt}>
+            {message.img && <img src="./avatar.png" alt="" />}
+            <div className="texts">
+              {message.img && <img src={message.img} alt="" />}
+              <p>{message.text}</p>
+              {/* <span>{message}</span> */}
+            </div>
           </div>
-        </div>
-        <div className="message own">
-          <div className="texts">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-              adipisci quae incidunt inventore velit nisi pariatur asperiores
-              fugiat sint obcaecati neque tempore, cupiditate corrupti
-              aspernatur impedit ipsum quia corporis temporibus.
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message">
-          <img src="./avatar.png" alt="" />
-          <div className="texts">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-              adipisci quae incidunt inventore velit nisi pariatur asperiores
-              fugiat sint obcaecati neque tempore, cupiditate corrupti
-              aspernatur impedit ipsum quia corporis temporibus.
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message own">
-          <div className="texts">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-              adipisci quae incidunt inventore velit nisi pariatur asperiores
-              fugiat sint obcaecati neque tempore, cupiditate corrupti
-              aspernatur impedit ipsum quia corporis temporibus.
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message">
-          <img src="./avatar.png" alt="" />
-          <div className="texts">
-            <img src="./Porsche-911-GT3-RS-4K-Wallpaper.jpg" alt="" />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-              adipisci quae incidunt inventore velit nisi pariatur asperiores
-              fugiat sint obcaecati neque tempore, cupiditate corrupti
-              aspernatur impedit ipsum quia corporis temporibus.
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
+        ))}
         <div ref={endRef}></div>
       </div>
       <div className="bottom">
@@ -139,7 +139,9 @@ const Chat = () => {
             <EmojiPicker open={open} onEmojiClick={handleEmoji}></EmojiPicker>
           </div>
         </div>
-        <button className="send-button">Send</button>
+        <button className="send-button" onClick={handleSend}>
+          Send
+        </button>
       </div>
     </div>
   );
