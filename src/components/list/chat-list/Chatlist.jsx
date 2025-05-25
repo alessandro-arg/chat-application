@@ -15,13 +15,13 @@ const Chatlist = () => {
     const unSub = onSnapshot(
       doc(db, "userchats", currentUser.id),
       async (response) => {
-        const items = response.data().chats;
+        const items = response.data()?.chats || [];
 
         const promises = items.map(async (item) => {
-          const userDocRef = doc(db, "users", item.reciverId);
+          const userDocRef = doc(db, "users", item.receiverId);
           const userDocSnap = await getDoc(userDocRef);
 
-          const user = userDocSnap.data();
+          const user = userDocSnap.exists() ? userDocSnap.data() : null;
 
           return { ...item, user };
         });
@@ -50,15 +50,15 @@ const Chatlist = () => {
           onClick={() => setAddMode((prev) => !prev)}
         />
       </div>
-      {chats.map((chat) => {
+      {chats.map((chat) => (
         <div className="item" key={chat.chatId}>
-          <img src="./avatar.png" alt="" />
+          <img src={chat.user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
-            <span>Jane Doe</span>
-            <p>{chat.lastMessage}</p>
+            <span>{chat.user?.username || "Unknown User"}</span>
+            <p>{chat.lastMessage || "No messages yet"}</p>
           </div>
-        </div>;
-      })}
+        </div>
+      ))}
       {addMode && <AddUser></AddUser>}
     </div>
   );
