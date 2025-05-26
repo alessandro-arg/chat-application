@@ -22,7 +22,6 @@ const Chat = () => {
     url: "",
   });
   const [isUploading, setIsUploading] = useState(false);
-  const [userStatus, setUserStatus] = useState(null);
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
@@ -44,23 +43,7 @@ const Chat = () => {
     };
   }, [chatId]);
 
-  useEffect(() => {
-    if (!user?.id) return;
-
-    const statusRef = doc(db, "userStatus", user.id);
-    const unSub = onSnapshot(statusRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setUserStatus(docSnap.data());
-      }
-    });
-
-    return () => unSub();
-  }, [user]);
-
-  const formatLastSeen = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString();
-  };
+  console.log(chat);
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
@@ -136,16 +119,7 @@ const Chat = () => {
           <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
-            <p>
-              <span
-                className={`status-dot ${
-                  user?.isOnline ? "online" : "offline"
-                }`}
-              ></span>
-              {user?.isOnline
-                ? "Online"
-                : `Last seen ${new Date(user?.lastSeen).toLocaleTimeString()}`}
-            </p>
+            <p>Online</p>
           </div>
         </div>
         <div className="icons">
