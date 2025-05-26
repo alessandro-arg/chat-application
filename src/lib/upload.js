@@ -9,17 +9,13 @@ const upload = async (file) => {
   return new Promise((resolve, reject) => {
     uploadTask.on(
       "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      },
+      null,
       (error) => {
-        reject("Something went wrong." + error.code);
+        reject("Something went wrong: " + error.code);
       },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          resolve(downloadURL);
-        });
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        resolve(downloadURL);
       }
     );
   });
