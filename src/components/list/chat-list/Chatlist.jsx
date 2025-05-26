@@ -63,12 +63,20 @@ const Chatlist = () => {
     }
   };
 
+  const filteredChats = chats.filter((c) =>
+    c.user.username.toLowerCase().includes(input.toLowerCase())
+  );
+
   return (
     <div className="chat-list">
       <div className="search">
         <div className="search-bar">
           <img src="./search.png" alt="" />
-          <input type="text" placeholder="Search" />
+          <input
+            type="text"
+            placeholder="Search"
+            onChange={(e) => setInput(e.target.value)}
+          />
         </div>
         <img
           src={addMode ? "./minus.png" : "./plus.png"}
@@ -77,7 +85,7 @@ const Chatlist = () => {
           onClick={() => setAddMode((prev) => !prev)}
         />
       </div>
-      {chats.map((chat) => (
+      {filteredChats.map((chat) => (
         <div
           className="item"
           key={chat.chatId}
@@ -98,7 +106,16 @@ const Chatlist = () => {
                 ? "User"
                 : chat.user.username}
             </span>
-            <p>{chat?.lastMessage || ""}</p>
+            {chat?.lastMessage === "📷 Photo" ? (
+              <p className="emoji-text">
+                <span className="camera-emoji" role="img" aria-label="camera">
+                  📷
+                </span>
+                <span>Photo</span>
+              </p>
+            ) : (
+              <p>{chat.lastMessage}</p>
+            )}
           </div>
         </div>
       ))}

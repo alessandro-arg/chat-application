@@ -21,6 +21,7 @@ const Chat = () => {
     file: null,
     url: "",
   });
+  const [isUploading, setIsUploading] = useState(false);
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
@@ -59,12 +60,13 @@ const Chat = () => {
   };
 
   const handleSend = async () => {
-    if (text === "") return;
+    if (text === "" && !img.file) return;
 
     let imgUrl = null;
 
     try {
       if (img.file) {
+        setIsUploading(true);
         imgUrl = await upload(img.file);
       }
 
@@ -89,7 +91,7 @@ const Chat = () => {
             (c) => c.chatId === chatId
           );
 
-          userChatsData.chats[chatIndex].lastMessage = text;
+          userChatsData.chats[chatIndex].lastMessage = text || "📷 Photo";
           userChatsData.chats[chatIndex].isSeen =
             id === currentUser.id ? true : false;
           userChatsData.chats[chatIndex].updatedAt = Date.now();
@@ -102,11 +104,11 @@ const Chat = () => {
     } catch (error) {
       console.log(error);
     }
+    setIsUploading(false);
     setImg({
       file: null,
       url: "",
     });
-
     setText("");
   };
 
@@ -117,7 +119,7 @@ const Chat = () => {
           <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p>Online</p>
           </div>
         </div>
         <div className="icons">
@@ -136,15 +138,30 @@ const Chat = () => {
           >
             <div className="texts">
               {message.img && <img src={message.img} alt="" />}
-              <p>{message.text}</p>
+              {message.text && <p>{message.text}</p>}
               {/* <span>{message}</span> */}
             </div>
           </div>
         ))}
         {img.url && (
-          <div className="message own">
+          <div className="message own preview">
             <div className="texts">
-              <img src={img.url} alt="" />
+              <div className="preview-wrapper">
+                {isUploading ? (
+                  <div className="spinner"></div>
+                ) : (
+                  <>
+                    <img src={img.url} alt="preview" />
+                    <button
+                      className="remove-img"
+                      onClick={() => setImg({ file: null, url: "" })}
+                      disabled={isUploading}
+                    >
+                      ×
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -195,9 +212,9 @@ const Chat = () => {
         <button
           className="send-button"
           onClick={handleSend}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
+          disabled={isUploading || isCurrentUserBlocked || isReceiverBlocked}
         >
-          Send
+          {isUploading ? "Sending..." : "Send"}
         </button>
       </div>
     </div>
