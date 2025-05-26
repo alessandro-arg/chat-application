@@ -5,7 +5,8 @@ import Login from "./components/login/Login";
 import Notification from "./components/notification/Notification";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./lib/firebase";
+import { auth, rtdb } from "./lib/firebase";
+import { ref, set, onDisconnect, serverTimestamp } from "firebase/database";
 import useUserStore from "./lib/user-store";
 import useChatStore from "./lib/chat-store";
 
@@ -16,7 +17,28 @@ const App = () => {
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, (user) => {
       fetchUserInfo(user?.uid);
+
+      if (user) {
+        const statusRef = ref(rtdb, `status/${user.uid}`);
+
+        const isOfflineForRTDB = {
+          state: "offline",
+          lastChanged: serverTimestamp(),
+        };
+
+        const isOnlineForRTDB = {
+          state: "online",
+          lastChanged: serverTimestamp(),
+        };
+
+        onDisconnect(statusRef)
+          .set(isOfflineForRTDB)
+          .then(() => {
+            set(statusRef, isOnlineForRTDB);
+          });
+      }
     });
+
     return () => {
       unSub();
     };

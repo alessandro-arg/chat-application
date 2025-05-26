@@ -3,6 +3,8 @@ import "./detail.css";
 import useUserStore from "../../lib/user-store";
 import useChatStore from "../../lib/chat-store";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { rtdb } from "../../lib/firebase";
+import { ref as rtdbRef, set } from "firebase/database";
 
 const Detail = () => {
   const { currentUser } = useUserStore();
@@ -21,6 +23,19 @@ const Detail = () => {
       changeBlock();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const statusRef = rtdbRef(rtdb, `status/${currentUser.id}`);
+      await set(statusRef, {
+        state: "offline",
+        lastChanged: Date.now(),
+      });
+      await auth.signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
   };
 
@@ -107,7 +122,7 @@ const Detail = () => {
             ? "User blocked"
             : "Block user"}
         </button>
-        <button className="logout" onClick={() => auth.signOut()}>
+        <button className="logout" onClick={handleLogout}>
           Logout
         </button>
       </div>

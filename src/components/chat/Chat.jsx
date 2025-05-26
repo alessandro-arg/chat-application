@@ -8,10 +8,15 @@ import {
   arrayUnion,
   getDoc,
 } from "firebase/firestore";
+import { onValue, ref as rtdbRef } from "firebase/database";
+import { rtdb } from "../../lib/firebase";
 import { db } from "../../lib/firebase";
 import useUserStore from "../../lib/user-store";
 import useChatStore from "../../lib/chat-store";
 import upload from "../../lib/upload";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 const Chat = () => {
   const [chat, setChat] = useState();
@@ -22,6 +27,7 @@ const Chat = () => {
     url: "",
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [userStatus, setUserStatus] = useState(null);
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
@@ -43,7 +49,27 @@ const Chat = () => {
     };
   }, [chatId]);
 
-  console.log(chat);
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const statusRef = rtdbRef(rtdb, `status/${user.id}`);
+
+    const unsubscribe = onValue(statusRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setUserStatus(snapshot.val());
+      } else {
+        setUserStatus(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user]);
+
+  const formatLastSeen = (timestamp) => {
+    return dayjs(timestamp).fromNow();
+  };
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
@@ -72,6 +98,7 @@ const Chat = () => {
 
       await updateDoc(doc(db, "chats", chatId), {
         messages: arrayUnion({
+          id: currentUser.id + Date.now(),
           senderId: currentUser.id,
           text,
           createdAt: new Date(),
@@ -119,7 +146,18 @@ const Chat = () => {
           <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
-            <p>Online</p>
+            <p>
+              <span
+                className={`status-dot ${
+                  userStatus?.state === "online" ? "online" : "offline"
+                }`}
+              ></span>
+              {userStatus?.state === "online"
+                ? "Online"
+                : userStatus?.lastChanged
+                ? `Last seen: ${formatLastSeen(userStatus.lastChanged)}`
+                : "Offline"}
+            </p>
           </div>
         </div>
         <div className="icons">
@@ -134,7 +172,7 @@ const Chat = () => {
             className={
               message.senderId === currentUser?.id ? "message own" : "message"
             }
-            key={message?.createdAt}
+            key={message?.id}
           >
             <div className="texts">
               {message.img && <img src={message.img} alt="" />}
