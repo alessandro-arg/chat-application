@@ -22,6 +22,7 @@ const Chat = () => {
     url: "",
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [userStatus, setUserStatus] = useState(null);
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
@@ -43,7 +44,23 @@ const Chat = () => {
     };
   }, [chatId]);
 
-  console.log(chat);
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const statusRef = doc(db, "userStatus", user.id);
+    const unSub = onSnapshot(statusRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setUserStatus(docSnap.data());
+      }
+    });
+
+    return () => unSub();
+  }, [user]);
+
+  const formatLastSeen = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
@@ -119,7 +136,16 @@ const Chat = () => {
           <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
-            <p>Online</p>
+            <p>
+              <span
+                className={`status-dot ${
+                  user?.isOnline ? "online" : "offline"
+                }`}
+              ></span>
+              {user?.isOnline
+                ? "Online"
+                : `Last seen ${new Date(user?.lastSeen).toLocaleTimeString()}`}
+            </p>
           </div>
         </div>
         <div className="icons">
@@ -177,6 +203,7 @@ const Chat = () => {
             id="file"
             style={{ display: "none" }}
             onChange={handleImg}
+            disabled={isCurrentUserBlocked || isReceiverBlocked}
           />
           <img src="./camera.png" alt="" />
           <img src="./mic.png" alt="" />
