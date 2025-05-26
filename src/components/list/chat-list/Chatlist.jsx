@@ -9,6 +9,7 @@ import { db } from "../../../lib/firebase";
 const Chatlist = () => {
   const [chats, setChats] = useState([]);
   const [addMode, setAddMode] = useState(false);
+  const [input, setInput] = useState("");
 
   const { currentUser } = useUserStore();
   const { changeChat } = useChatStore();
@@ -83,10 +84,21 @@ const Chatlist = () => {
           onClick={() => handleSelect(chat)}
           style={{ backgroundColor: chat?.isSeen ? "transparent" : "#5183fe" }}
         >
-          <img src={chat.user?.avatar || "./avatar.png"} alt="" />
+          <img
+            src={
+              chat.user.blocked.includes(currentUser.id)
+                ? "./avatar.png"
+                : chat.user?.avatar || "./avatar.png"
+            }
+            alt=""
+          />
           <div className="texts">
-            <span>{chat.user?.username || "Unknown User"}</span>
-            <p>{chat?.lastMessage || "No messages yet"}</p>
+            <span>
+              {chat.user.blocked.includes(currentUser.id)
+                ? "User"
+                : chat.user.username}
+            </span>
+            <p>{chat?.lastMessage || ""}</p>
           </div>
         </div>
       ))}
