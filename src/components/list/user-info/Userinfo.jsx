@@ -1,5 +1,5 @@
 import "./user-info.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useUserStore from "../../../lib/user-store";
 import { updateUsername, updateProfilePicture } from "../../../lib/user-utils";
 
@@ -7,6 +7,26 @@ const Userinfo = () => {
   const { currentUser, setCurrentUser } = useUserStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const menuWrapperRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        menuWrapperRef.current &&
+        !menuWrapperRef.current.contains(e.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleToggleMenu = (e) => {
+    e.stopPropagation();
+    setMenuOpen((prev) => !prev);
+  };
 
   const handleEditUsername = async () => {
     const newUsername = prompt("Enter new username", currentUser.username);
@@ -52,12 +72,12 @@ const Userinfo = () => {
         <img src={currentUser.avatar || "./avatar.png"} alt="" />
         <h2>{currentUser.username}</h2>
       </div>
-      <div className="icons" style={{ position: "relative" }}>
-        <img
-          src="./more.png"
-          alt=""
-          onClick={() => setMenuOpen((prev) => !prev)}
-        />
+      <div
+        className="icons"
+        style={{ position: "relative" }}
+        ref={menuWrapperRef}
+      >
+        <img src="./more.png" alt="" onClick={handleToggleMenu} />
         {menuOpen && (
           <div className="dropdown-menu">
             <div onClick={handleEditUsername}>Edit Username</div>
