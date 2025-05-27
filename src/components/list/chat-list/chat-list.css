@@ -66,6 +66,11 @@
         gap: 6px;
         align-items: center;
 
+        span {
+          font-size: 14px;
+          font-weight: 400;
+        }
+
         .camera-emoji {
           padding-bottom: 5px;
         }
@@ -73,12 +78,13 @@
 
       span {
         font-weight: 500;
-      }
-
-      p {
-        font-size: 14px;
-        font-weight: 300;
+        font-size: 18px;
       }
     }
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 400;
   }
 }

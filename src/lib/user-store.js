@@ -23,6 +23,7 @@ const useUserStore = create((set) => ({
       return set({ currentUser: null, isLoading: false });
     }
   },
+  setCurrentUser: (updatedUser) => set({ currentUser: updatedUser }),
 }));
 
 export default useUserStore;

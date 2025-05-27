@@ -153,10 +153,10 @@ const Chat = () => {
                 }`}
               ></span>
               {userStatus?.state === "online"
-                ? "Online"
+                ? " Online"
                 : userStatus?.lastChanged
-                ? `Last seen: ${formatLastSeen(userStatus.lastChanged)}`
-                : "Offline"}
+                ? ` Last seen ${formatLastSeen(userStatus.lastChanged)}`
+                : " Offline"}
             </p>
           </div>
         </div>

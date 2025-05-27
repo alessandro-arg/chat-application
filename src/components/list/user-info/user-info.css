@@ -28,3 +28,38 @@
     cursor: pointer;
   }
 }
+
+.dropdown-menu {
+  position: absolute;
+  top: 150%;
+  right: -5px;
+  background-color: rgba(17, 25, 40, 0.8);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.dropdown-menu div {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.dropdown-menu div:hover {
+  background-color: rgba(17, 25, 40, 0.945);
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  padding: 4px 10px;
+  background: rgba(17, 25, 40, 0.75);
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+}
