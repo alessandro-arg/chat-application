@@ -1,6 +1,7 @@
 .chat-list {
   flex: 1;
   overflow-y: auto;
+  position: relative;
 
   .search {
     display: flex;
@@ -86,5 +87,47 @@
   p {
     font-size: 14px;
     font-weight: 400;
+  }
+
+  .timestamp {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 12px;
+    color: #aaaaaa;
+  }
+
+  .chat-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+  }
+
+  .menu-icon {
+    width: 20px !important;
+    height: 20px !important;
+    cursor: pointer;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    bottom: 24px;
+    right: 0;
+    height: auto !important;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 6px 0;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+
+  .dropdown-menu > div {
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+  .dropdown-menu > div:hover {
+    background-color: #f0f0f0;
   }
 }

@@ -9,6 +9,7 @@ import { auth, rtdb } from "./lib/firebase";
 import { ref, set, onDisconnect, serverTimestamp } from "firebase/database";
 import useUserStore from "./lib/user-store";
 import useChatStore from "./lib/chat-store";
+import "typeface-inter";
 
 const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
