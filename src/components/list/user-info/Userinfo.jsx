@@ -1,6 +1,7 @@
 import "./user-info.css";
 import { useEffect, useRef, useState } from "react";
 import useUserStore from "../../../lib/user-store";
+import { toast } from "react-toastify";
 import { updateUsername, updateProfilePicture } from "../../../lib/user-utils";
 
 const Userinfo = () => {
@@ -37,7 +38,9 @@ const Userinfo = () => {
         setCurrentUser({ ...currentUser, username: newUsername });
       } catch (err) {
         console.error("Failed to update username", err);
+        toast.error("Failed to update username.");
       } finally {
+        toast.success("Username updated successfully!");
         setLoading(false);
       }
     }
@@ -57,7 +60,9 @@ const Userinfo = () => {
           setCurrentUser({ ...currentUser, avatar: newAvatarURL });
         } catch (err) {
           console.error("Failed to update avatar", err);
+          toast.error("Failed to update profile picture.");
         } finally {
+          toast.success("Profile picture updated!");
           setLoading(false);
         }
       }
@@ -78,14 +83,19 @@ const Userinfo = () => {
         ref={menuWrapperRef}
       >
         <img src="./more.png" alt="" onClick={handleToggleMenu} />
-        {menuOpen && (
-          <div className="dropdown-menu">
-            <div onClick={handleEditUsername}>Edit Username</div>
-            <div onClick={handleEditAvatar}>Edit Profile Picture</div>
-          </div>
-        )}
+        <div className={`dropdown-menu ${menuOpen ? "open" : ""}`}>
+          <div onClick={handleEditUsername}>Edit Username</div>
+          <div onClick={handleEditAvatar}>Edit Profile Picture</div>
+        </div>
       </div>
-      {loading && <div className="loading-overlay">Updating...</div>}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <div>Updating image...</div>
+            <div className="spinner"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
