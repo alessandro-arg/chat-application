@@ -2,6 +2,7 @@
   flex: 1;
   overflow-y: auto;
   position: relative;
+  overflow: visible;
 
   .search {
     display: flex;
@@ -49,6 +50,8 @@
     padding: 20px;
     cursor: pointer;
     border-bottom: 1px solid #dddddd35;
+    overflow: visible;
+    z-index: 1;
 
     img {
       width: 50px;
@@ -70,6 +73,7 @@
         span {
           font-size: 14px;
           font-weight: 400;
+          color: #aaaaaa;
         }
 
         .camera-emoji {
@@ -97,37 +101,40 @@
     color: #aaaaaa;
   }
 
-  .chat-actions {
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
-  }
-
   .menu-icon {
-    width: 20px !important;
-    height: 20px !important;
     cursor: pointer;
   }
 
   .dropdown-menu {
     position: absolute;
-    bottom: 24px;
+    top: 30px;
     right: 0;
-    height: auto !important;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 6px 0;
+    background-color: rgb(17, 25, 40);
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
   }
 
-  .dropdown-menu > div {
-    padding: 6px 12px;
+  .dropdown-menu div {
+    padding: 15px 20px;
     cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    border-radius: 6px;
+    background-color: rgb(17, 25, 40);
   }
 
-  .dropdown-menu > div:hover {
-    background-color: #f0f0f0;
+  .dropdown-menu div:hover {
+    background-color: rgba(17, 25, 40, 0.945);
+  }
+
+  .dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 }

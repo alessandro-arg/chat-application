@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./chat-list.css";
 import AddUser from "./add-user/AddUser";
 import useUserStore from "../../../lib/user-store";
@@ -14,6 +14,7 @@ const Chatlist = () => {
   const [addMode, setAddMode] = useState(false);
   const [input, setInput] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
+  const menuWrapperRef = useRef(null);
 
   const { currentUser } = useUserStore();
   const { changeChat } = useChatStore();
@@ -159,23 +160,28 @@ const Chatlist = () => {
             <div className="timestamp">
               {chat.updatedAt && formatTimestamp(chat.updatedAt)}
             </div>
-            <div className="chat-actions">
+            <div
+              className="chat-actions"
+              style={{ position: "absolute", right: "20px", bottom: "10px" }}
+            >
               <img
-                src="public/arrowDown.png"
+                src="/arrowDown.png"
                 alt="Options"
                 className="menu-icon"
                 onClick={(e) => handleMenuToggle(e, chat.chatId)}
               />
-              {menuOpen === chat.chatId && (
-                <div className="dropdown-menu">
-                  <div onClick={() => handleDeleteChat(chat.chatId)}>
-                    Delete Chat
-                  </div>
-                  <div onClick={() => handleBlockUser(chat.user.id)}>
-                    Block User
-                  </div>
+              <div
+                className={`dropdown-menu ${
+                  menuOpen === chat.chatId ? "open" : ""
+                }`}
+              >
+                <div onClick={() => handleDeleteChat(chat.chatId)}>
+                  Delete Chat
                 </div>
-              )}
+                <div onClick={() => handleBlockUser(chat.user.id)}>
+                  Block User
+                </div>
+              </div>
             </div>
           </div>
         );

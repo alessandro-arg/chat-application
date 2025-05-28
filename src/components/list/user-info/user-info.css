@@ -29,21 +29,6 @@
   }
 }
 
-/* .dropdown-menu {
-  position: absolute;
-  top: 150%;
-  right: -5px;
-  background-color: rgba(17, 25, 40, 0.8);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-  overflow: hidden;
-  z-index: 999;
-}
-
-.dropdown-menu div:hover {
-  background-color: rgba(17, 25, 40, 0.945);
-} */
-
 .dropdown-menu {
   position: absolute;
   top: 40px;
