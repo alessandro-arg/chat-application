@@ -1,6 +1,7 @@
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
 import { useEffect, useState, useRef } from "react";
+import React from "react";
 import {
   onSnapshot,
   doc,
@@ -14,6 +15,7 @@ import { db } from "../../lib/firebase";
 import useUserStore from "../../lib/user-store";
 import useChatStore from "../../lib/chat-store";
 import upload from "../../lib/upload";
+import { formatMessageMeta } from "../../lib/message-helper";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -168,32 +170,36 @@ const Chat = () => {
       </div>
       <div className="center">
         {chat?.messages?.map((message, index) => {
-          const messageDate = dayjs(
-            typeof message.createdAt?.toDate === "function"
-              ? message.createdAt.toDate()
-              : message.createdAt
-          );
-          const formattedTime = messageDate.format("HH:mm");
+          const { formattedTime, formattedDate, showDateSeparator } =
+            formatMessageMeta(message, index, chat.messages);
 
           return (
-            <div
-              className={
-                message.senderId === currentUser?.id ? "message own" : "message"
-              }
-              key={message?.id}
-            >
-              <div className="texts">
-                {message.img && <img src={message.img} alt="" />}
-                {message.text && <p>{message.text}</p>}
-                <span
-                  className={
-                    message.senderId === currentUser?.id ? "time own" : "time"
-                  }
-                >
-                  {formattedTime}
-                </span>
+            <React.Fragment key={message?.id}>
+              {showDateSeparator && (
+                <div className="date-separator">
+                  <span>{formattedDate}</span>
+                </div>
+              )}
+              <div
+                className={
+                  message.senderId === currentUser?.id
+                    ? "message own"
+                    : "message"
+                }
+              >
+                <div className="texts">
+                  {message.img && <img src={message.img} alt="" />}
+                  {message.text && <p>{message.text}</p>}
+                  <span
+                    className={
+                      message.senderId === currentUser?.id ? "time own" : "time"
+                    }
+                  >
+                    {formattedTime}
+                  </span>
+                </div>
               </div>
-            </div>
+            </React.Fragment>
           );
         })}
         {img.url && (

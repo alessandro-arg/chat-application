@@ -217,15 +217,11 @@
       position: relative;
     }
 
-    .date-separator::before,
-    .date-separator::after {
-      content: "";
-      display: inline-block;
-      width: 30%;
-      height: 1px;
-      background: #ccc;
-      vertical-align: middle;
-      margin: 0 10px;
+    .date-separator span {
+      background: rgba(17, 25, 40, 0.5);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
     }
   }
 
