@@ -167,20 +167,35 @@ const Chat = () => {
         </div>
       </div>
       <div className="center">
-        {chat?.messages?.map((message) => (
-          <div
-            className={
-              message.senderId === currentUser?.id ? "message own" : "message"
-            }
-            key={message?.id}
-          >
-            <div className="texts">
-              {message.img && <img src={message.img} alt="" />}
-              {message.text && <p>{message.text}</p>}
-              {/* <span>{message}</span> */}
+        {chat?.messages?.map((message, index) => {
+          const messageDate = dayjs(
+            typeof message.createdAt?.toDate === "function"
+              ? message.createdAt.toDate()
+              : message.createdAt
+          );
+          const formattedTime = messageDate.format("HH:mm");
+
+          return (
+            <div
+              className={
+                message.senderId === currentUser?.id ? "message own" : "message"
+              }
+              key={message?.id}
+            >
+              <div className="texts">
+                {message.img && <img src={message.img} alt="" />}
+                {message.text && <p>{message.text}</p>}
+                <span
+                  className={
+                    message.senderId === currentUser?.id ? "time own" : "time"
+                  }
+                >
+                  {formattedTime}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {img.url && (
           <div className="message own preview">
             <div className="texts">

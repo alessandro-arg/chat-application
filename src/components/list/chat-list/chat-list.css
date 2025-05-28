@@ -100,18 +100,27 @@
     color: #aaaaaa;
   }
 
+  .chat-actions {
+    padding: 10px;
+  }
+
   .menu-icon {
     cursor: pointer;
-    height: 15px !important;
-    width: 15px !important;
+    height: 35px !important;
+    width: 35px !important;
+    padding: 10px !important;
+
+    &:hover {
+      background-color: rgba(17, 25, 40, 0.8);
+    }
   }
 
   .dropdown-menu {
     position: absolute;
-    top: 0%;
-    left: 150%;
+    top: -90%;
+    left: 90%;
     min-width: 130px;
-    background-color: rgb(17, 25, 40);
+    background-color: rgba(17, 25, 40, 0.8);
     border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
@@ -127,11 +136,11 @@
     font-size: 16px;
     white-space: nowrap;
     border-radius: 6px;
-    background-color: rgb(17, 25, 40);
   }
 
   .dropdown-menu div:hover {
-    background-color: rgba(28, 40, 65, 0.945);
+    background-color: rgba(222, 49, 98, 0.37);
+    color: rgb(255, 212, 224);
   }
 
   .dropdown-menu.open {

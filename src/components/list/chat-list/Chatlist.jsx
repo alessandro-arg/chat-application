@@ -162,7 +162,7 @@ const Chatlist = () => {
             </div>
             <div
               className="chat-actions"
-              style={{ position: "absolute", right: "20px", bottom: "10px" }}
+              style={{ position: "absolute", right: "0", bottom: "-10px" }}
             >
               <img
                 src="/arrowRight.png"
