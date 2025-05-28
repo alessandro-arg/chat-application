@@ -111,7 +111,7 @@
     padding: 10px !important;
 
     &:hover {
-      background-color: rgba(17, 25, 40, 0.8);
+      background-color: rgba(17, 25, 40, 0.3);
     }
   }
 

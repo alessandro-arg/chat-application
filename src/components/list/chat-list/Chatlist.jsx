@@ -14,7 +14,7 @@ const Chatlist = () => {
   const [addMode, setAddMode] = useState(false);
   const [input, setInput] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
-  const menuWrapperRef = useRef(null);
+  const menuRefs = useRef({});
 
   const { currentUser } = useUserStore();
   const { changeChat } = useChatStore();
@@ -43,6 +43,23 @@ const Chatlist = () => {
       unSub();
     };
   }, [currentUser.id]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        menuOpen &&
+        menuRefs.current[menuOpen] &&
+        !menuRefs.current[menuOpen].contains(e.target)
+      ) {
+        setMenuOpen(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const handleSelect = async (chat) => {
     const userChats = chats.map((item) => {
@@ -163,6 +180,7 @@ const Chatlist = () => {
             <div
               className="chat-actions"
               style={{ position: "absolute", right: "0", bottom: "-10px" }}
+              ref={(el) => (menuRefs.current[chat.chatId] = el)}
             >
               <img
                 src="/arrowRight.png"
