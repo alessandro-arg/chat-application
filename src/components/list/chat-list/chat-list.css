@@ -1,7 +1,6 @@
 .chat-list {
   flex: 1;
   overflow-y: auto;
-  position: relative;
   overflow: visible;
 
   .search {
@@ -103,17 +102,20 @@
 
   .menu-icon {
     cursor: pointer;
+    height: 15px !important;
+    width: 15px !important;
   }
 
   .dropdown-menu {
     position: absolute;
-    top: 30px;
-    right: 0;
+    top: 0%;
+    left: 150%;
+    min-width: 130px;
     background-color: rgb(17, 25, 40);
     border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateX(-10px);
     pointer-events: none;
     transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
@@ -129,12 +131,12 @@
   }
 
   .dropdown-menu div:hover {
-    background-color: rgba(17, 25, 40, 0.945);
+    background-color: rgba(28, 40, 65, 0.945);
   }
 
   .dropdown-menu.open {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
     pointer-events: auto;
   }
 }

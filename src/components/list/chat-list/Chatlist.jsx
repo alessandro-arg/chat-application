@@ -165,7 +165,7 @@ const Chatlist = () => {
               style={{ position: "absolute", right: "20px", bottom: "10px" }}
             >
               <img
-                src="/arrowDown.png"
+                src="/arrowRight.png"
                 alt="Options"
                 className="menu-icon"
                 onClick={(e) => handleMenuToggle(e, chat.chatId)}
