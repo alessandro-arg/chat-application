@@ -30,6 +30,7 @@ const Chat = ({ onToggleDetail }) => {
   });
   const [isUploading, setIsUploading] = useState(false);
   const [userStatus, setUserStatus] = useState(null);
+  const [fullscreenImg, setFullscreenImg] = useState(null);
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
@@ -38,8 +39,10 @@ const Chat = ({ onToggleDetail }) => {
   const endRef = useRef(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chat?.messages]);
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
@@ -141,6 +144,27 @@ const Chat = ({ onToggleDetail }) => {
     setText("");
   };
 
+  const handleDownload = (url) => {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const filename = `image-${timestamp}.jpg`;
+
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Download failed:", error);
+      });
+  };
+
   return (
     <div className="chat">
       <div className="top">
@@ -186,7 +210,14 @@ const Chat = ({ onToggleDetail }) => {
                 }
               >
                 <div className="texts">
-                  {message.img && <img src={message.img} alt="" />}
+                  {message.img && (
+                    <img
+                      src={message.img}
+                      alt=""
+                      onClick={() => setFullscreenImg(message.img)}
+                      className="chat-img"
+                    />
+                  )}
                   {message.text && <p>{message.text}</p>}
                   <span
                     className={
@@ -200,6 +231,23 @@ const Chat = ({ onToggleDetail }) => {
             </React.Fragment>
           );
         })}
+        {fullscreenImg && (
+          <div
+            className="image-viewer-overlay"
+            onClick={() => setFullscreenImg(null)}
+          >
+            <div
+              className="image-viewer-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img src={fullscreenImg} alt="fullscreen" />
+              <div className="image-viewer-actions">
+                <button onClick={() => setFullscreenImg(null)}>✕</button>
+                <button onClick={() => handleDownload(fullscreenImg)}>⬇</button>
+              </div>
+            </div>
+          </div>
+        )}
         {img.url && (
           <div className="message own preview">
             <div className="texts">
