@@ -18,6 +18,7 @@ import upload from "../../lib/upload";
 import { formatMessageMeta } from "../../lib/message-helper";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { toast } from "react-toastify";
 dayjs.extend(relativeTime);
 
 const Chat = ({ onToggleDetail }) => {
@@ -159,6 +160,7 @@ const Chat = ({ onToggleDetail }) => {
         a.click();
         a.remove();
         window.URL.revokeObjectURL(blobUrl);
+        toast.success("Image downloaded succesfully!");
       })
       .catch((error) => {
         console.error("Download failed:", error);
@@ -242,8 +244,12 @@ const Chat = ({ onToggleDetail }) => {
             >
               <img src={fullscreenImg} alt="fullscreen" />
               <div className="image-viewer-actions">
-                <button onClick={() => setFullscreenImg(null)}>✕</button>
-                <button onClick={() => handleDownload(fullscreenImg)}>⬇</button>
+                <button onClick={() => setFullscreenImg(null)}>
+                  <img src="./close.svg" alt="Close" />
+                </button>
+                <button onClick={() => handleDownload(fullscreenImg)}>
+                  <img src="./download.png" alt="Download" />
+                </button>
               </div>
             </div>
           </div>

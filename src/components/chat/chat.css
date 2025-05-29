@@ -226,8 +226,8 @@
     }
 
     .image-viewer-content img {
-      max-width: 70%;
-      max-height: 100vh;
+      max-width: 100%;
+      max-height: 70vh;
       width: auto;
       height: auto;
       object-fit: contain;
@@ -237,27 +237,40 @@
 
     .image-viewer-actions {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 20px;
+      background-color: rgba(0, 0, 0, 0.6);
       display: flex;
-      gap: 10px;
+      gap: 20px;
+      justify-content: flex-start;
+      flex-direction: row-reverse;
+      z-index: 1;
     }
 
-    .image-viewer-actions button,
-    .image-viewer-actions a {
-      background: rgba(0, 0, 0, 0.6);
+    .image-viewer-actions button {
+      background-color: rgba(255, 255, 255, 0.2);
       border: none;
-      color: white;
-      font-size: 22px;
-      padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: 50%;
+      padding: 10px;
       cursor: pointer;
-      text-decoration: none;
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .image-viewer-actions button:hover,
-    .image-viewer-actions a:hover {
-      background: rgba(255, 255, 255, 0.2);
+    .image-viewer-actions button:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .image-viewer-actions button img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      box-shadow: none;
+      border-radius: 0px;
     }
 
     .time {
