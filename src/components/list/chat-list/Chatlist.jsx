@@ -171,7 +171,7 @@ const Chatlist = () => {
                   <span>Photo</span>
                 </p>
               ) : (
-                <p style={{ color: "#aaaaaa" }}>{chat.lastMessage}</p>
+                <p className="last-message">{chat.lastMessage}</p>
               )}
             </div>
             <div className="timestamp">
