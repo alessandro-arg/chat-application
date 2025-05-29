@@ -96,6 +96,88 @@
   animation: spin 1s linear infinite;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.modal {
+  background: rgba(17, 25, 40, 0.8);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  max-width: 90%;
+  animation: scaleIn 0.3s ease-in-out;
+  text-align: center;
+}
+
+.modal input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.modal input:focus {
+  outline: none;
+  text-decoration: none;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-buttons button:first-child {
+  background: #eee;
+}
+
+.modal-buttons button:last-child {
+  background: #5183fe;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

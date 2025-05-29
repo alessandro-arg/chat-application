@@ -8,6 +8,8 @@ const Userinfo = () => {
   const { currentUser, setCurrentUser } = useUserStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editUsernameModalOpen, setEditUsernameModalOpen] = useState(false);
+  const [newUsername, setNewUsername] = useState(currentUser.username);
   const menuWrapperRef = useRef(null);
 
   useEffect(() => {
@@ -29,23 +31,46 @@ const Userinfo = () => {
     setMenuOpen((prev) => !prev);
   };
 
-  const handleEditUsername = async () => {
-    const newUsername = prompt("Enter new username", currentUser.username);
+  const handleEditUsername = () => {
+    setNewUsername(currentUser.username);
+    setEditUsernameModalOpen(true);
+    setMenuOpen(false);
+  };
+
+  const confirmUsernameUpdate = async () => {
     if (newUsername && newUsername !== currentUser.username) {
       try {
         setLoading(true);
         await updateUsername(newUsername);
         setCurrentUser({ ...currentUser, username: newUsername });
+        toast.success("Username updated successfully!");
       } catch (err) {
         console.error("Failed to update username", err);
         toast.error("Failed to update username.");
       } finally {
-        toast.success("Username updated successfully!");
         setLoading(false);
       }
     }
-    setMenuOpen(false);
+    setEditUsernameModalOpen(false);
   };
+
+  // const handleEditUsername = async () => {
+  //   const newUsername = prompt("Enter new username", currentUser.username);
+  //   if (newUsername && newUsername !== currentUser.username) {
+  //     try {
+  //       setLoading(true);
+  //       await updateUsername(newUsername);
+  //       setCurrentUser({ ...currentUser, username: newUsername });
+  //     } catch (err) {
+  //       console.error("Failed to update username", err);
+  //       toast.error("Failed to update username.");
+  //     } finally {
+  //       toast.success("Username updated successfully!");
+  //       setLoading(false);
+  //     }
+  //   }
+  //   setMenuOpen(false);
+  // };
 
   const handleEditAvatar = async () => {
     const fileInput = document.createElement("input");
@@ -88,6 +113,26 @@ const Userinfo = () => {
           <div onClick={handleEditAvatar}>Edit Profile Picture</div>
         </div>
       </div>
+
+      {editUsernameModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Change Username</h3>
+            <input
+              type="text"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+            />
+            <div className="modal-buttons">
+              <button onClick={() => setEditUsernameModalOpen(false)}>
+                Cancel
+              </button>
+              <button onClick={confirmUsernameUpdate}>Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {loading && (
         <div className="loading-overlay">
           <div className="loading-content">
