@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-const Chat = () => {
+const Chat = ({ onToggleDetail }) => {
   const [chat, setChat] = useState();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -163,9 +163,7 @@ const Chat = () => {
           </div>
         </div>
         <div className="icons">
-          <img src="./phone.png" alt="" />
-          <img src="./video.png" alt="" />
-          <img src="./info.png" alt="" />
+          <img src="./info.png" alt="" onClick={onToggleDetail} />
         </div>
       </div>
       <div className="center">

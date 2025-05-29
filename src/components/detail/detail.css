@@ -1,5 +1,6 @@
 .detail {
   flex: 1;
+  position: relative;
 
   .user {
     padding: 30px 20px;
@@ -15,6 +16,37 @@
       border-radius: 50%;
       object-fit: cover;
     }
+
+    p {
+      text-align: center;
+    }
+  }
+
+  .close-btn {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 40px;
+    cursor: pointer;
+    color: white;
+    border-radius: 50%;
+
+    img {
+      width: 25px;
+      height: 25px;
+      opacity: 0.9;
+    }
+  }
+
+  .close-btn:hover {
+    background-color: rgba(17, 25, 40, 0.5);
   }
 
   .info {

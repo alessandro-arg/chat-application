@@ -6,7 +6,7 @@ import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { rtdb } from "../../lib/firebase";
 import { ref as rtdbRef, set } from "firebase/database";
 
-const Detail = () => {
+const Detail = ({ onClose }) => {
   const { currentUser } = useUserStore();
   const { user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } =
     useChatStore();
@@ -41,6 +41,11 @@ const Detail = () => {
 
   return (
     <div className="detail">
+      <div className="button-wrapper">
+        <button className="close-btn" onClick={onClose}>
+          <img src="./close.svg" alt="" />
+        </button>
+      </div>
       <div className="user">
         <img src={user?.avatar || "./avatar.png"} alt="" />
         <h2>{user?.username}</h2>

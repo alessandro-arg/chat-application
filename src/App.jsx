@@ -3,7 +3,7 @@ import Chat from "./components/chat/Chat";
 import Detail from "./components/detail/Detail";
 import Login from "./components/login/Login";
 import Notification from "./components/notification/Notification";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, rtdb } from "./lib/firebase";
 import { ref, set, onDisconnect, serverTimestamp } from "firebase/database";
@@ -14,6 +14,7 @@ import "typeface-inter";
 const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
   const { chatId } = useChatStore();
+  const [showDetail, setShowDetail] = useState(false);
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, (user) => {
@@ -52,8 +53,12 @@ const App = () => {
       {currentUser ? (
         <>
           <List></List>
-          {chatId && <Chat></Chat>}
-          {chatId && <Detail></Detail>}
+          {chatId && (
+            <>
+              <Chat onToggleDetail={() => setShowDetail((prev) => !prev)} />
+              {showDetail && <Detail onClose={() => setShowDetail(false)} />}
+            </>
+          )}
         </>
       ) : (
         <Login></Login>
