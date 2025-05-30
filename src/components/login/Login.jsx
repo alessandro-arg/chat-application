@@ -42,7 +42,11 @@ const Login = () => {
             password
           );
 
-          const imgUrl = await upload(avatar.file);
+          let imgUrl = "./avatar.png";
+
+          if (avatar?.file) {
+            imgUrl = await upload(avatar.file);
+          }
 
           await setDoc(doc(db, "users", response.user.uid), {
             username,

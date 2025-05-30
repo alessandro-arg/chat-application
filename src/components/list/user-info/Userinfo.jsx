@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import useUserStore from "../../../lib/user-store";
 import { toast } from "react-toastify";
 import { updateUsername, updateProfilePicture } from "../../../lib/user-utils";
+import { updateDoc, doc } from "firebase/firestore";
+import { ref, deleteObject } from "firebase/storage";
+import { db, storage } from "../../../lib/firebase";
 
 const Userinfo = () => {
   const { currentUser, setCurrentUser } = useUserStore();
@@ -11,6 +14,8 @@ const Userinfo = () => {
   const [editUsernameModalOpen, setEditUsernameModalOpen] = useState(false);
   const [newUsername, setNewUsername] = useState(currentUser.username);
   const menuWrapperRef = useRef(null);
+
+  const DEFAULT_AVATAR = "./avatar.png";
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -54,24 +59,6 @@ const Userinfo = () => {
     setEditUsernameModalOpen(false);
   };
 
-  // const handleEditUsername = async () => {
-  //   const newUsername = prompt("Enter new username", currentUser.username);
-  //   if (newUsername && newUsername !== currentUser.username) {
-  //     try {
-  //       setLoading(true);
-  //       await updateUsername(newUsername);
-  //       setCurrentUser({ ...currentUser, username: newUsername });
-  //     } catch (err) {
-  //       console.error("Failed to update username", err);
-  //       toast.error("Failed to update username.");
-  //     } finally {
-  //       toast.success("Username updated successfully!");
-  //       setLoading(false);
-  //     }
-  //   }
-  //   setMenuOpen(false);
-  // };
-
   const handleEditAvatar = async () => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -96,6 +83,32 @@ const Userinfo = () => {
     setMenuOpen(false);
   };
 
+  const handleDeleteAvatar = async () => {
+    if (currentUser.avatar === DEFAULT_AVATAR) return;
+
+    try {
+      if (currentUser.avatar.includes("firebasestorage.googleapis.com")) {
+        const decodedUrl = decodeURIComponent(currentUser.avatar);
+        const match = decodedUrl.match(/\/o\/(.+)\?alt=media/);
+        if (match && match[1]) {
+          const filePath = match[1];
+          const fileRef = ref(storage, filePath);
+          await deleteObject(fileRef);
+        }
+      }
+      await updateDoc(doc(db, "users", currentUser.id), {
+        avatar: DEFAULT_AVATAR,
+      });
+      setCurrentUser({ ...currentUser, avatar: DEFAULT_AVATAR });
+      toast.success("Profile picture removed.");
+    } catch (err) {
+      console.error("Failed to delete avatar", err);
+      toast.error("Failed to remove profile picture.");
+    } finally {
+      setMenuOpen(false);
+    }
+  };
+
   return (
     <div className="user-info">
       <div className="user">
@@ -111,6 +124,15 @@ const Userinfo = () => {
         <div className={`dropdown-menu ${menuOpen ? "open" : ""}`}>
           <div onClick={handleEditUsername}>Edit Username</div>
           <div onClick={handleEditAvatar}>Edit Profile Picture</div>
+          <div
+            onClick={handleDeleteAvatar}
+            disabled={currentUser.avatar === DEFAULT_AVATAR}
+            className={currentUser.avatar === DEFAULT_AVATAR ? "disabled" : ""}
+          >
+            Remove Profile Picture
+          </div>
+          <div>Change Background</div>
+          <div>Logout</div>
         </div>
       </div>
 

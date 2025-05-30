@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../../lib/firebase";
 import useUserStore from "../../../../lib/user-store";
+import { toast } from "react-toastify";
 
 const AddUser = ({ onClose }) => {
   const [input, setInput] = useState("");
@@ -119,6 +120,7 @@ const AddUser = ({ onClose }) => {
       });
 
       setExistingChatUserIds((prev) => [...prev, user.id]);
+      toast.success("User added!");
     } catch (error) {
       console.log("Error adding user:", error);
     }
