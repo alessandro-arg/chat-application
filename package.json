@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "dayjs": "^1.11.13",
     "emoji-picker-react": "^4.12.2",
     "firebase": "^11.8.1",

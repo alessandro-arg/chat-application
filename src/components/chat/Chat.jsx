@@ -1,5 +1,7 @@
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
 import {
@@ -77,8 +79,8 @@ const Chat = ({ onToggleDetail }) => {
     return dayjs(timestamp).fromNow();
   };
 
-  const handleEmoji = (e) => {
-    setText((prev) => prev + e.emoji);
+  const handleEmoji = (emoji) => {
+    setText((prev) => prev + emoji.native);
     setOpen(false);
   };
 
@@ -315,9 +317,11 @@ const Chat = ({ onToggleDetail }) => {
             onClick={() => setOpen((prev) => !prev)}
             disabled={isCurrentUserBlocked || isReceiverBlocked}
           />
-          <div className="picker">
-            <EmojiPicker open={open} onEmojiClick={handleEmoji}></EmojiPicker>
-          </div>
+          {open && (
+            <div className="picker">
+              <Picker data={data} onEmojiSelect={handleEmoji} theme="light" />
+            </div>
+          )}
         </div>
         <button
           className="send-button"
