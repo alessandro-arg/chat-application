@@ -139,7 +139,7 @@ const Chatlist = () => {
           src={addMode ? "./minus.png" : "./plus.png"}
           alt=""
           className="add"
-          onClick={() => setAddMode((prev) => !prev)}
+          onClick={() => setAddMode(true)}
         />
       </div>
       {filteredChats.map((chat) => {
@@ -204,7 +204,7 @@ const Chatlist = () => {
           </div>
         );
       })}
-      {addMode && <AddUser></AddUser>}
+      {addMode && <AddUser onClose={() => setAddMode(false)} />}
     </div>
   );
 };
