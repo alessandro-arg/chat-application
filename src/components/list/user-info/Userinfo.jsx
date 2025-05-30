@@ -13,9 +13,6 @@ const Userinfo = () => {
   const [loading, setLoading] = useState(false);
   const [editUsernameModalOpen, setEditUsernameModalOpen] = useState(false);
   const [newUsername, setNewUsername] = useState(currentUser.username);
-  const [backgroundModalOpen, setBackgroundModalOpen] = useState(false);
-  const [selectedBackground, setSelectedBackground] = useState(null);
-  const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
   const menuWrapperRef = useRef(null);
 
   const DEFAULT_AVATAR = "./avatar.png";
@@ -134,9 +131,6 @@ const Userinfo = () => {
           >
             Remove Profile Picture
           </div>
-          <div onClick={() => setBackgroundModalOpen(true)}>
-            Change Background
-          </div>
           <div>Logout</div>
         </div>
       </div>
@@ -159,61 +153,6 @@ const Userinfo = () => {
           </div>
         </div>
       )}
-
-      {backgroundModalOpen && (
-        <div className="bg-modal-overlay">
-          <div className="bg-modal">
-            <h3>Select a Background</h3>
-            <div className="background-options">
-              {["bg1.jpg", "bg2.jpg", "bg3.jpg", "bg4.jpg"].map((bg, index) => (
-                <img
-                  key={index}
-                  src={`./backgrounds/${bg}`}
-                  alt={`Background ${index + 1}`}
-                  onClick={() => {
-                    setSelectedBackground(bg);
-                    setConfirmPopupOpen(true);
-                  }}
-                  className="background-thumb"
-                />
-              ))}
-            </div>
-            <div className="bg-modal-buttons">
-              <button onClick={() => setBackgroundModalOpen(false)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {confirmPopupOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Apply this background?</h3>
-            <img
-              src={`./backgrounds/${selectedBackground}`}
-              alt="Preview"
-              style={{ width: "100%", borderRadius: "10px" }}
-            />
-            <div className="modal-buttons">
-              <button onClick={() => setConfirmPopupOpen(false)}>No</button>
-              <button
-                onClick={() => {
-                  document.body.style.backgroundImage = `url('./backgrounds/${selectedBackground}')`;
-                  document.body.style.backgroundSize = "cover";
-                  document.body.style.backgroundRepeat = "no-repeat";
-                  setConfirmPopupOpen(false);
-                  setBackgroundModalOpen(false);
-                }}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {loading && (
         <div className="loading-overlay">
           <div className="loading-content">
