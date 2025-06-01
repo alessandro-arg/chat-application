@@ -5,6 +5,7 @@ import useChatStore from "../../lib/chat-store";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { rtdb } from "../../lib/firebase";
 import { ref as rtdbRef, set } from "firebase/database";
+import { toast } from "react-toastify";
 
 const Detail = ({ onClose }) => {
   const { currentUser } = useUserStore();
@@ -34,6 +35,7 @@ const Detail = ({ onClose }) => {
         lastChanged: Date.now(),
       });
       await auth.signOut();
+      toast.success("Correctly logged out");
     } catch (error) {
       console.error("Logout failed:", error);
     }

@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 import { updateUsername, updateProfilePicture } from "../../../lib/user-utils";
 import { updateDoc, doc } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
-import { db, storage } from "../../../lib/firebase";
+import { auth, db, storage } from "../../../lib/firebase";
+import { rtdb } from "../../../lib/firebase";
+import { ref as rtdbRef, set } from "firebase/database";
 
 const Userinfo = () => {
   const { currentUser, setCurrentUser } = useUserStore();
@@ -109,6 +111,20 @@ const Userinfo = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const statusRef = rtdbRef(rtdb, `status/${currentUser.id}`);
+      await set(statusRef, {
+        state: "offline",
+        lastChanged: Date.now(),
+      });
+      await auth.signOut();
+      toast.success("Correctly logged out");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div className="user-info">
       <div className="user">
@@ -131,7 +147,7 @@ const Userinfo = () => {
           >
             Remove Profile Picture
           </div>
-          <div>Logout</div>
+          <div onClick={handleLogout}>Logout</div>
         </div>
       </div>
 

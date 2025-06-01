@@ -98,7 +98,6 @@ const Login = () => {
     } catch (err) {
     } finally {
       setLoading(false);
-      window.location.reload();
     }
   };
 
