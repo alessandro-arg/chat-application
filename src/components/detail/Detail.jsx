@@ -51,7 +51,6 @@ const Detail = ({ onClose }) => {
       <div className="user">
         <img src={user?.avatar || "./avatar.png"} alt="" />
         <h2>{user?.username}</h2>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
       </div>
       <div className="info">
         <div className="option">
@@ -122,17 +121,14 @@ const Detail = ({ onClose }) => {
             <img src="./arrowUp.png" alt="" />
           </div>
         </div>
-        <button onClick={handleBlock}>
-          {isCurrentUserBlocked
-            ? "You are blocked"
-            : isReceiverBlocked
-            ? "User blocked"
-            : "Block user"}
-        </button>
-        <button className="logout" onClick={handleLogout}>
-          Logout
-        </button>
       </div>
+      <button className="block-button" onClick={handleBlock}>
+        {isCurrentUserBlocked
+          ? "You are blocked"
+          : isReceiverBlocked
+          ? "User blocked"
+          : "Block user"}
+      </button>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import "./login.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { auth, db, storage } from "../../lib/firebase";
+import { auth, db } from "../../lib/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
