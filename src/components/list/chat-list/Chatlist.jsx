@@ -8,6 +8,7 @@ import { arrayRemove, arrayUnion } from "firebase/firestore";
 import { auth, db } from "../../../lib/firebase";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { toast } from "react-toastify";
 dayjs.extend(relativeTime);
 
 const Chatlist = () => {
@@ -102,21 +103,53 @@ const Chatlist = () => {
   );
 
   const handleDeleteChat = async (chatId) => {
-    console.log("Delete chat", chatId);
+    const userChatsRef = doc(db, "userchats", currentUser.id);
+
+    try {
+      const userChatsSnap = await getDoc(userChatsRef);
+      if (userChatsSnap.exists()) {
+        const currentChats = userChatsSnap.data().chats || [];
+        const updatedChats = currentChats.filter(
+          (chat) => chat.chatId !== chatId
+        );
+
+        await updateDoc(userChatsRef, {
+          chats: updatedChats,
+        });
+
+        if (user?.chatId === chatId) {
+          changeChat(null, null);
+        }
+        toast.success("Chat deleted succesfully");
+      }
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
   };
 
   const handleBlock = async () => {
     if (!user) return;
-
     const userDocRef = doc(db, "users", currentUser.id);
 
     try {
+      const userSnap = await getDoc(userDocRef);
+      const blockedList = userSnap.data()?.blocked || [];
+      const isBlocked = blockedList.includes(user.id);
+      const updatedBlockedList = isBlocked
+        ? arrayRemove(user.id)
+        : arrayUnion(user.id);
+
       await updateDoc(userDocRef, {
-        blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
+        blocked: updatedBlockedList,
       });
-      changeBlock();
+
+      const refreshedSnap = await getDoc(userDocRef);
+      const refreshedBlocked = refreshedSnap.data()?.blocked || [];
+      const receiverIsBlocked = refreshedBlocked.includes(user.id);
+      useChatStore.getState().setReceiverBlocked(receiverIsBlocked);
+      toast.success("User blocked!");
     } catch (error) {
-      console.log(error);
+      console.log("Error updating block status:", error);
     }
   };
 

@@ -1,28 +1,9 @@
-import { auth, db } from "../../lib/firebase";
 import "./detail.css";
-import useUserStore from "../../lib/user-store";
 import useChatStore from "../../lib/chat-store";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 
 const Detail = ({ onClose }) => {
-  const { currentUser } = useUserStore();
   const { user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } =
     useChatStore();
-
-  const handleBlock = async () => {
-    if (!user) return;
-
-    const userDocRef = doc(db, "users", currentUser.id);
-
-    try {
-      await updateDoc(userDocRef, {
-        blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
-      });
-      changeBlock();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div className="detail">
@@ -98,20 +79,7 @@ const Detail = ({ onClose }) => {
             </div>
           </div>
         </div>
-        <div className="option">
-          <div className="title">
-            <span>Shared files</span>
-            <img src="./arrowUp.png" alt="" />
-          </div>
-        </div>
       </div>
-      <button className="block-button" onClick={handleBlock}>
-        {isCurrentUserBlocked
-          ? "You are blocked"
-          : isReceiverBlocked
-          ? "User blocked"
-          : "Block user"}
-      </button>
     </div>
   );
 };
