@@ -4,7 +4,8 @@ import AddUser from "./add-user/AddUser";
 import useUserStore from "../../../lib/user-store";
 import useChatStore from "../../../lib/chat-store";
 import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "../../../lib/firebase";
+import { arrayRemove, arrayUnion } from "firebase/firestore";
+import { auth, db } from "../../../lib/firebase";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -17,7 +18,13 @@ const Chatlist = () => {
   const menuRefs = useRef({});
 
   const { currentUser } = useUserStore();
-  const { changeChat } = useChatStore();
+  const {
+    user,
+    changeChat,
+    isCurrentUserBlocked,
+    isReceiverBlocked,
+    changeBlock,
+  } = useChatStore();
 
   useEffect(() => {
     const unSub = onSnapshot(
@@ -98,8 +105,19 @@ const Chatlist = () => {
     console.log("Delete chat", chatId);
   };
 
-  const handleBlockUser = async (userId) => {
-    console.log("Block user", userId);
+  const handleBlock = async () => {
+    if (!user) return;
+
+    const userDocRef = doc(db, "users", currentUser.id);
+
+    try {
+      await updateDoc(userDocRef, {
+        blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
+      });
+      changeBlock();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const formatTimestamp = (timestamp) => {
@@ -196,8 +214,12 @@ const Chatlist = () => {
                 <div onClick={() => handleDeleteChat(chat.chatId)}>
                   Delete Chat
                 </div>
-                <div onClick={() => handleBlockUser(chat.user.id)}>
-                  Block User
+                <div onClick={handleBlock}>
+                  {isCurrentUserBlocked
+                    ? "You are blocked"
+                    : isReceiverBlocked
+                    ? "User blocked"
+                    : "Block user"}
                 </div>
               </div>
             </div>
