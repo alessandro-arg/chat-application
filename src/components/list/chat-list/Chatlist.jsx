@@ -147,7 +147,6 @@ const Chatlist = () => {
       const refreshedBlocked = refreshedSnap.data()?.blocked || [];
       const receiverIsBlocked = refreshedBlocked.includes(user.id);
       useChatStore.getState().setReceiverBlocked(receiverIsBlocked);
-      toast.success("User blocked!");
     } catch (error) {
       console.log("Error updating block status:", error);
     }
@@ -203,7 +202,6 @@ const Chatlist = () => {
             onClick={() => handleSelect(chat)}
             style={{
               backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
-              position: "relative",
             }}
           >
             <img
@@ -234,7 +232,7 @@ const Chatlist = () => {
               ref={(el) => (menuRefs.current[chat.chatId] = el)}
             >
               <img
-                src="/arrowRight.png"
+                src="/arrowDown.png"
                 alt="Options"
                 className="menu-icon"
                 onClick={(e) => handleMenuToggle(e, chat.chatId)}
@@ -244,10 +242,20 @@ const Chatlist = () => {
                   menuOpen === chat.chatId ? "open" : ""
                 }`}
               >
-                <div onClick={() => handleDeleteChat(chat.chatId)}>
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteChat(chat.chatId);
+                  }}
+                >
                   Delete Chat
                 </div>
-                <div onClick={handleBlock}>
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleBlock();
+                  }}
+                >
                   {isCurrentUserBlocked
                     ? "You are blocked"
                     : isReceiverBlocked

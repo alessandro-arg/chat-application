@@ -50,7 +50,7 @@
     cursor: pointer;
     border-bottom: 1px solid #dddddd35;
     overflow: visible;
-    z-index: 1;
+    position: relative;
 
     img {
       width: 50px;
@@ -128,14 +128,16 @@
 
   .dropdown-menu {
     position: absolute;
-    top: -90%;
-    left: 90%;
+    bottom: 0;
+    right: 20%;
+    min-height: fit-content;
     min-width: 130px;
-    background-color: rgba(17, 25, 40, 0.8);
+    width: fit-content;
+    background-color: rgba(67, 120, 255, 0.938);
     border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateY(-10px);
     pointer-events: none;
     transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
@@ -156,7 +158,7 @@
 
   .dropdown-menu.open {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(8px);
     pointer-events: auto;
   }
 }
