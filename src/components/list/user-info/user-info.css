@@ -33,7 +33,7 @@
   position: absolute;
   top: 40px;
   right: -5px;
-  background-color: rgba(17, 25, 40, 0.8);
+  background-color: rgba(81, 130, 254, 0.8);
   border-radius: 6px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   opacity: 0;
@@ -56,7 +56,7 @@
 }
 
 .dropdown-menu div:hover {
-  background-color: rgba(17, 25, 40, 0.945);
+  background-color: rgba(81, 130, 254, 1);
 }
 
 .dropdown-menu.open {

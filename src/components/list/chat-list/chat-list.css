@@ -133,7 +133,7 @@
     min-height: fit-content;
     min-width: 130px;
     width: fit-content;
-    background-color: rgba(81, 130, 254, 0.938);
+    background-color: rgba(81, 130, 254, 0.8);
     border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
@@ -152,8 +152,8 @@
   }
 
   .dropdown-menu div:hover {
-    background-color: rgba(222, 49, 98, 0.37);
-    color: rgb(255, 212, 224);
+    background-color: rgba(81, 130, 254, 1);
+    color: rgb(255, 167, 192);
   }
 
   .dropdown-menu.open {
