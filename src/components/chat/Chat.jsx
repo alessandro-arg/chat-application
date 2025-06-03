@@ -290,7 +290,7 @@ const Chat = ({ onToggleDetail }) => {
             id="file"
             style={{ display: "none" }}
             onChange={handleImg}
-            disabled={isCurrentUserBlocked || isReceiverBlocked}
+            disabled={isReceiverBlocked || isCurrentUserBlocked}
           />
         </div>
         <input
@@ -302,11 +302,11 @@ const Chat = ({ onToggleDetail }) => {
           }
           value={text}
           onChange={(e) => setText(e.target.value)}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
+          disabled={isReceiverBlocked || isCurrentUserBlocked}
         />
         <div
           className={
-            isCurrentUserBlocked || isReceiverBlocked
+            isReceiverBlocked || isCurrentUserBlocked
               ? "emoji blocked"
               : "emoji"
           }
@@ -315,7 +315,7 @@ const Chat = ({ onToggleDetail }) => {
             src="./emoji.png"
             alt=""
             onClick={() => setOpen((prev) => !prev)}
-            disabled={isCurrentUserBlocked || isReceiverBlocked}
+            disabled={isReceiverBlocked || isCurrentUserBlocked}
           />
           {open && (
             <div className="picker">
@@ -326,7 +326,7 @@ const Chat = ({ onToggleDetail }) => {
         <button
           className="send-button"
           onClick={handleSend}
-          disabled={isUploading || isCurrentUserBlocked || isReceiverBlocked}
+          disabled={isUploading || isReceiverBlocked || isCurrentUserBlocked}
         >
           {isUploading ? "Sending..." : "Send"}
         </button>
