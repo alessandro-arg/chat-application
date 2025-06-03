@@ -7,6 +7,11 @@ import { doc, getDoc } from "firebase/firestore";
 const Detail = ({ onClose }) => {
   const { user, chatId } = useChatStore();
   const [images, setImages] = useState([]);
+  const [showPhotos, setShowPhotos] = useState(false);
+
+  const togglePhotos = () => {
+    setShowPhotos((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -58,12 +63,18 @@ const Detail = ({ onClose }) => {
             <img src="./arrowUp.png" alt="" />
           </div>
         </div>
-        <div className="option">
+        <div className="option" onClick={togglePhotos}>
           <div className="title">
             <span>Shared photos</span>
-            <img src="./arrowDown.png" alt="" />
+            <img
+              src={showPhotos ? "./arrowDown.png" : "./arrowUp.png"}
+              alt=""
+            />
           </div>
-          <div className="photos">
+          <div
+            className={`photos ${showPhotos ? "visible" : ""}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             {images.length === 0 ? (
               <p className="no-images">No shared photos yet</p>
             ) : (
@@ -71,7 +82,13 @@ const Detail = ({ onClose }) => {
                 const fullPath = decodeURIComponent(
                   imgUrl.split("/o/")[1]?.split("?")[0] || ""
                 );
-                const filename = fullPath.replace(/^images\//, "");
+                const filenameWithTimestamp = fullPath.replace(/^images\//, "");
+                const filenameMatch = filenameWithTimestamp.match(
+                  /[^/\\]*\.(jpg|jpeg|png|gif)$/i
+                );
+                const filename = filenameMatch
+                  ? filenameMatch[0]
+                  : filenameWithTimestamp;
 
                 return (
                   <div className="photo-item" key={index}>
