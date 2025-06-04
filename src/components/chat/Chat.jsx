@@ -283,7 +283,7 @@ const Chat = ({ onToggleDetail }) => {
       <div className="bottom">
         <div className="icons">
           <label htmlFor="file">
-            <img src="./img.png" alt="" />
+            <img src="./camera.png" alt="" />
           </label>
           <input
             type="file"

@@ -169,13 +169,19 @@ const Detail = ({ onClose }) => {
         </div>
         <div className="option">
           <div className="title">
-            <span>Privacy & help</span>
+            <div className="privacy-wrapper">
+              <img src="./privacy&help.png" alt="" />
+              <span>Privacy & help</span>
+            </div>
             <img src="./arrowUp.png" alt="" />
           </div>
         </div>
         <div className="option" onClick={togglePhotos}>
           <div className="title">
-            <span>Shared photos</span>
+            <div className="photo-wrapper">
+              <img src="./shared-img.png" alt="" />
+              <span>Shared photos</span>
+            </div>
             <img
               src={showPhotos ? "./arrowDown.png" : "./arrowUp.png"}
               alt=""
