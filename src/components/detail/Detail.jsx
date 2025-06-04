@@ -4,12 +4,52 @@ import { useEffect, useState } from "react";
 import { db } from "../../lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { useRef } from "react";
 
 const Detail = ({ onClose }) => {
   const { user, chatId } = useChatStore();
   const [images, setImages] = useState([]);
   const [showPhotos, setShowPhotos] = useState(false);
   const [fullscreenImgIndex, setFullscreenImgIndex] = useState(null);
+  const [showChatSettings, setShowChatSettings] = useState(false);
+  const [muteNotifications, setMuteNotifications] = useState(false);
+  const [pinChat, setPinChat] = useState(false);
+  const settingsRef = useRef(null);
+  const [height, setHeight] = useState("0px");
+
+  useEffect(() => {
+    if (showChatSettings && settingsRef.current) {
+      setHeight(`${settingsRef.current.scrollHeight}px`);
+    } else {
+      setHeight("0px");
+    }
+  }, [showChatSettings]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (!chatId) return;
+
+      try {
+        const chatRef = doc(db, "chats", chatId);
+        const chatSnap = await getDoc(chatRef);
+
+        if (chatSnap.exists()) {
+          const chatData = chatSnap.data();
+          const allMessages = chatData.messages || [];
+
+          const imageMessages = allMessages
+            .filter((msg) => msg.img)
+            .map((msg) => msg.img);
+
+          setImages(imageMessages);
+        }
+      } catch (err) {
+        console.error("Error fetching chat images:", err);
+      }
+    };
+
+    fetchImages();
+  }, [chatId]);
 
   const togglePhotos = () => {
     setShowPhotos((prev) => !prev);
@@ -48,31 +88,11 @@ const Detail = ({ onClose }) => {
       });
   };
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      if (!chatId) return;
-
-      try {
-        const chatRef = doc(db, "chats", chatId);
-        const chatSnap = await getDoc(chatRef);
-
-        if (chatSnap.exists()) {
-          const chatData = chatSnap.data();
-          const allMessages = chatData.messages || [];
-
-          const imageMessages = allMessages
-            .filter((msg) => msg.img)
-            .map((msg) => msg.img);
-
-          setImages(imageMessages);
-        }
-      } catch (err) {
-        console.error("Error fetching chat images:", err);
-      }
-    };
-
-    fetchImages();
-  }, [chatId]);
+  const handleClearChat = () => {
+    if (window.confirm("Are you sure you want to clear the chat history?")) {
+      toast.success("Chat history cleared!");
+    }
+  };
 
   const handleNextImage = () => {
     setFullscreenImgIndex((prevIndex) =>
@@ -103,10 +123,52 @@ const Detail = ({ onClose }) => {
       </div>
       <div className="info">
         <div className="option">
-          <div className="title">
-            <span>Chat settings</span>
-            <img src="./arrowUp.png" alt="" />
+          <div
+            className="title"
+            onClick={() => setShowChatSettings((prev) => !prev)}
+          >
+            <div className="settings-wrapper">
+              <img src="./settings.png" alt="" />
+              <span>Chat settings</span>
+            </div>
+            <img
+              src={showChatSettings ? "./arrowDown.png" : "./arrowUp.png"}
+              alt=""
+              className="toggle-arrow"
+            />
           </div>
+        </div>
+        <div
+          className="settings-content"
+          ref={settingsRef}
+          style={{
+            height: height,
+            opacity: showChatSettings ? 1 : 0,
+            overflow: "hidden",
+            transition:
+              "height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease-in-out",
+          }}
+        >
+          <div
+            className="toggle-item"
+            onClick={() => setMuteNotifications(!muteNotifications)}
+          >
+            <img src="./notifications.png" alt="" />
+            <span>Mute notifications</span>
+          </div>
+
+          <label className="toggle-item">
+            <input
+              type="checkbox"
+              checked={pinChat}
+              onChange={() => setPinChat(!pinChat)}
+            />
+            <span>Pin this chat</span>
+          </label>
+
+          <button className="clear-chat-btn" onClick={handleClearChat}>
+            Clear chat history
+          </button>
         </div>
         <div className="option">
           <div className="title">
