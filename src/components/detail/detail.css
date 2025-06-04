@@ -219,4 +219,38 @@
     box-shadow: none;
     border-radius: 0px;
   }
+
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: none;
+    cursor: pointer;
+    padding: 10px 15px;
+    z-index: 2;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+  }
+
+  .nav-arrow img {
+    box-shadow: none;
+  }
+
+  .nav-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .nav-arrow.left {
+    left: 20px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .nav-arrow.right {
+    right: 20px;
+    width: 70px;
+    height: 70px;
+  }
 }

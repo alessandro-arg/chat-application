@@ -9,7 +9,7 @@ const Detail = ({ onClose }) => {
   const { user, chatId } = useChatStore();
   const [images, setImages] = useState([]);
   const [showPhotos, setShowPhotos] = useState(false);
-  const [fullscreenImg, setFullscreenImg] = useState(null);
+  const [fullscreenImgIndex, setFullscreenImgIndex] = useState(null);
 
   const togglePhotos = () => {
     setShowPhotos((prev) => !prev);
@@ -74,6 +74,22 @@ const Detail = ({ onClose }) => {
     fetchImages();
   }, [chatId]);
 
+  const handleNextImage = () => {
+    setFullscreenImgIndex((prevIndex) =>
+      prevIndex < images.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePrevImage = () => {
+    setFullscreenImgIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : images.length - 1
+    );
+  };
+
+  const handleCloseFullscreen = () => {
+    setFullscreenImgIndex(null);
+  };
+
   return (
     <div className="detail">
       <div className="button-wrapper">
@@ -122,11 +138,11 @@ const Detail = ({ onClose }) => {
                       <img
                         src={imgUrl}
                         alt={`shared-${index}`}
-                        onClick={() => setFullscreenImg(imgUrl)}
+                        onClick={() => setFullscreenImgIndex(index)}
                       />
                       <span
                         title={filename}
-                        onClick={() => setFullscreenImg(imgUrl)}
+                        onClick={() => setFullscreenImgIndex(index)}
                       >
                         {filename.length > 10
                           ? filename.slice(0, 10) + "..."
@@ -137,7 +153,7 @@ const Detail = ({ onClose }) => {
                       src="./download.png"
                       alt="Download"
                       className="icon"
-                      onClick={() => handleDownload(fullscreenImg)}
+                      onClick={() => handleDownload(images[fullscreenImgIndex])}
                     />
                   </div>
                 );
@@ -146,24 +162,29 @@ const Detail = ({ onClose }) => {
           </div>
         </div>
       </div>
-      {fullscreenImg && (
-        <div
-          className="image-viewer-overlay"
-          onClick={() => setFullscreenImg(null)}
-        >
+      {fullscreenImgIndex !== null && (
+        <div className="image-viewer-overlay" onClick={handleCloseFullscreen}>
           <div
             className="image-viewer-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <img src={fullscreenImg} alt="fullscreen" />
+            <img src={images[fullscreenImgIndex]} alt="fullscreen" />
             <div className="image-viewer-actions">
-              <button onClick={() => setFullscreenImg(null)}>
+              <button onClick={handleCloseFullscreen}>
                 <img src="./close.svg" alt="Close" />
               </button>
-              <button onClick={() => handleDownload(fullscreenImg)}>
+              <button
+                onClick={() => handleDownload(images[fullscreenImgIndex])}
+              >
                 <img src="./download.png" alt="Download" />
               </button>
             </div>
+            <button className="nav-arrow left" onClick={handlePrevImage}>
+              <img src="./arrowLeft.png" alt="" />
+            </button>
+            <button className="nav-arrow right" onClick={handleNextImage}>
+              <img src="./arrowRight.png" alt="" />
+            </button>
           </div>
         </div>
       )}
