@@ -20,8 +20,8 @@ import upload from "../../lib/upload";
 import { formatMessageMeta } from "../../lib/message-helper";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { toast } from "react-toastify";
 dayjs.extend(relativeTime);
+import { toast } from "react-toastify";
 
 const Chat = ({ onToggleDetail }) => {
   const [chat, setChat] = useState();

@@ -91,13 +91,34 @@
         display: flex;
         flex-direction: column;
         margin-top: 15px;
+        cursor: default;
+
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-button {
+          display: none;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(17, 25, 40, 0.65);
+          border-radius: 10px;
+          transition: background-color 0.3s ease;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
       }
 
       .photos.visible {
-        max-height: 500px;
+        height: fit-content;
+        max-height: 200px;
         overflow-y: auto;
         opacity: 1;
         transform: translateY(0);
+        cursor: pointer;
       }
 
       .photo-item {
@@ -130,20 +151,72 @@
     }
   }
 
-  .block-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    width: 60%;
-    padding: 15px;
-    background-color: rgba(230, 74, 105, 0.533);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .image-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
 
-    &:hover {
-      background-color: rgba(220, 20, 60, 0.796);
-    }
+  .image-viewer-content {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-viewer-content img {
+    max-width: 100%;
+    max-height: 70vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .image-viewer-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    flex-direction: row-reverse;
+    z-index: 1;
+  }
+
+  .image-viewer-actions button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-viewer-actions button:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .image-viewer-actions button img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    box-shadow: none;
+    border-radius: 0px;
   }
 }

@@ -3,14 +3,49 @@ import useChatStore from "../../lib/chat-store";
 import { useEffect, useState } from "react";
 import { db } from "../../lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const Detail = ({ onClose }) => {
   const { user, chatId } = useChatStore();
   const [images, setImages] = useState([]);
   const [showPhotos, setShowPhotos] = useState(false);
+  const [fullscreenImg, setFullscreenImg] = useState(null);
 
   const togglePhotos = () => {
     setShowPhotos((prev) => !prev);
+  };
+
+  const getFilenameFromUrl = (imgUrl) => {
+    const fullPath = decodeURIComponent(
+      imgUrl.split("/o/")[1]?.split("?")[0] || ""
+    );
+    const filenameWithTimestamp = fullPath.replace(/^images\//, "");
+    const filenameMatch = filenameWithTimestamp.match(
+      /[^/\\]*\.(jpg|jpeg|png|gif)$/i
+    );
+    return filenameMatch ? filenameMatch[0] : filenameWithTimestamp;
+  };
+
+  const handleDownload = (url) => {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const filename = `image-${timestamp}.jpg`;
+
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(blobUrl);
+        toast.success("Image downloaded succesfully!");
+      })
+      .catch((error) => {
+        toast.error("Download failed:", error);
+      });
   };
 
   useEffect(() => {
@@ -79,28 +114,31 @@ const Detail = ({ onClose }) => {
               <p className="no-images">No shared photos yet</p>
             ) : (
               images.map((imgUrl, index) => {
-                const fullPath = decodeURIComponent(
-                  imgUrl.split("/o/")[1]?.split("?")[0] || ""
-                );
-                const filenameWithTimestamp = fullPath.replace(/^images\//, "");
-                const filenameMatch = filenameWithTimestamp.match(
-                  /[^/\\]*\.(jpg|jpeg|png|gif)$/i
-                );
-                const filename = filenameMatch
-                  ? filenameMatch[0]
-                  : filenameWithTimestamp;
+                const filename = getFilenameFromUrl(imgUrl);
 
                 return (
                   <div className="photo-item" key={index}>
                     <div className="photo-detail">
-                      <img src={imgUrl} alt={`shared-${index}`} />
-                      <span title={filename}>
+                      <img
+                        src={imgUrl}
+                        alt={`shared-${index}`}
+                        onClick={() => setFullscreenImg(imgUrl)}
+                      />
+                      <span
+                        title={filename}
+                        onClick={() => setFullscreenImg(imgUrl)}
+                      >
                         {filename.length > 10
                           ? filename.slice(0, 10) + "..."
                           : filename}
                       </span>
                     </div>
-                    <img src="./download.png" alt="Download" className="icon" />
+                    <img
+                      src="./download.png"
+                      alt="Download"
+                      className="icon"
+                      onClick={() => handleDownload(fullscreenImg)}
+                    />
                   </div>
                 );
               })
@@ -108,6 +146,27 @@ const Detail = ({ onClose }) => {
           </div>
         </div>
       </div>
+      {fullscreenImg && (
+        <div
+          className="image-viewer-overlay"
+          onClick={() => setFullscreenImg(null)}
+        >
+          <div
+            className="image-viewer-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img src={fullscreenImg} alt="fullscreen" />
+            <div className="image-viewer-actions">
+              <button onClick={() => setFullscreenImg(null)}>
+                <img src="./close.svg" alt="Close" />
+              </button>
+              <button onClick={() => handleDownload(fullscreenImg)}>
+                <img src="./download.png" alt="Download" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
