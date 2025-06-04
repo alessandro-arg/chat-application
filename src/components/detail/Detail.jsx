@@ -157,18 +157,15 @@ const Detail = ({ onClose }) => {
             <span>Mute notifications</span>
           </div>
 
-          <label className="toggle-item">
-            <input
-              type="checkbox"
-              checked={pinChat}
-              onChange={() => setPinChat(!pinChat)}
-            />
+          <div className="toggle-item" onClick={() => setPinChat(!pinChat)}>
+            <img src="./pin.png" alt="" />
             <span>Pin this chat</span>
-          </label>
+          </div>
 
-          <button className="clear-chat-btn" onClick={handleClearChat}>
-            Clear chat history
-          </button>
+          <div className="toggle-item clear-btn" onClick={handleClearChat}>
+            <img src="./trash.png" alt="" />
+            <span>Clear chat history</span>
+          </div>
         </div>
         <div className="option">
           <div className="title">
