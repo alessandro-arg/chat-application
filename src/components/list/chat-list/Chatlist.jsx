@@ -200,9 +200,6 @@ const Chatlist = () => {
             className="item"
             key={chat.chatId}
             onClick={() => handleSelect(chat)}
-            style={{
-              backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
-            }}
           >
             <img
               src={
@@ -223,8 +220,16 @@ const Chatlist = () => {
                 <p className="last-message">{chat.lastMessage}</p>
               )}
             </div>
-            <div className="timestamp">
-              {chat.updatedAt && formatTimestamp(chat.updatedAt)}
+            <div className="timestamp-wrapper">
+              <div
+                className="timestamp"
+                style={{
+                  color: chat?.isSeen ? "#aaaaaa" : "#5183fe",
+                }}
+              >
+                {chat.updatedAt && formatTimestamp(chat.updatedAt)}
+                {!chat.isSeen && <div className="unseen-indicator" />}
+              </div>
             </div>
             <div
               className="chat-actions"
