@@ -62,7 +62,9 @@
     .texts {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 2px;
+      flex: 1;
+      max-width: 65%;
 
       .emoji-text {
         display: flex;
@@ -88,6 +90,8 @@
   }
 
   .last-message {
+    font-size: 14px;
+    font-weight: 400;
     color: #aaaaaa;
     display: -webkit-box;
     line-clamp: 2;
@@ -95,7 +99,9 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 80%;
+    white-space: normal;
+    word-break: break-word;
+    max-height: 2.8em;
   }
 
   p {
