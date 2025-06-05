@@ -273,7 +273,8 @@
     border-radius: 0 !important;
   }
 
-  .settings-content {
+  .settings-content,
+  .privacy-help-content {
     display: flex;
     flex-direction: column;
   }

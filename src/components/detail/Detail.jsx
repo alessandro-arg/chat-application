@@ -16,6 +16,9 @@ const Detail = ({ onClose }) => {
   const [pinChat, setPinChat] = useState(false);
   const settingsRef = useRef(null);
   const [height, setHeight] = useState("0px");
+  const [showPrivacyHelp, setShowPrivacyHelp] = useState(false);
+  const privacyHelpRef = useRef(null);
+  const [privacyHelpHeight, setPrivacyHelpHeight] = useState("0px");
 
   useEffect(() => {
     if (showChatSettings && settingsRef.current) {
@@ -24,6 +27,14 @@ const Detail = ({ onClose }) => {
       setHeight("0px");
     }
   }, [showChatSettings]);
+
+  useEffect(() => {
+    if (privacyHelpRef.current) {
+      setPrivacyHelpHeight(
+        showPrivacyHelp ? `${privacyHelpRef.current.scrollHeight}px` : "0px"
+      );
+    }
+  }, [showPrivacyHelp]);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -110,6 +121,18 @@ const Detail = ({ onClose }) => {
     setFullscreenImgIndex(null);
   };
 
+  const handleBlockUser = () => {};
+
+  const handleReportUser = () => {};
+
+  const handleOpenFAQ = () => {
+    window.open("https://yourfaqpage.com", "_blank");
+  };
+
+  const handleContactSupport = () => {
+    window.location.href = "mailto:contact@alessandro-argenziano.com";
+  };
+
   return (
     <div className="detail">
       <div className="button-wrapper">
@@ -162,18 +185,55 @@ const Detail = ({ onClose }) => {
             <span>Pin this chat</span>
           </div>
 
-          <div className="toggle-item clear-btn" onClick={handleClearChat}>
+          <div className="toggle-item" onClick={handleClearChat}>
             <img src="./trash.png" alt="" />
             <span>Clear chat history</span>
           </div>
         </div>
         <div className="option">
-          <div className="title">
+          <div
+            className="title"
+            onClick={() => setShowPrivacyHelp((prev) => !prev)}
+          >
             <div className="privacy-wrapper">
               <img src="./privacy&help.png" alt="" />
               <span>Privacy & help</span>
             </div>
-            <img src="./arrowUp.png" alt="" />
+            <img
+              src={showPrivacyHelp ? "./arrowDown.png" : "./arrowUp.png"}
+              alt=""
+              className="toggle-arrow"
+            />
+          </div>
+        </div>
+        <div
+          className="privacy-help-content"
+          ref={privacyHelpRef}
+          style={{
+            height: privacyHelpHeight,
+            opacity: showPrivacyHelp ? 1 : 0,
+            overflow: "hidden",
+            transition:
+              "height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease-in-out",
+            pointerEvents: showPrivacyHelp ? "auto" : "none",
+            visibility: showPrivacyHelp ? "visible" : "hidden",
+          }}
+        >
+          <div className="toggle-item" onClick={handleBlockUser}>
+            <img src="./block.png" alt="" />
+            <span>Block user</span>
+          </div>
+          <div className="toggle-item" onClick={handleReportUser}>
+            <img src="./report.png" alt="" />
+            <span>Report user</span>
+          </div>
+          <div className="toggle-item" onClick={handleOpenFAQ}>
+            <img src="./faq.png" alt="" />
+            <span>FAQs</span>
+          </div>
+          <div className="toggle-item" onClick={handleContactSupport}>
+            <img src="./support.png" alt="" />
+            <span>Support</span>
           </div>
         </div>
         <div className="option" onClick={togglePhotos}>
