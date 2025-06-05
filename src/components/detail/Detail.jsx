@@ -19,6 +19,8 @@ const Detail = ({ onClose }) => {
   const [showPrivacyHelp, setShowPrivacyHelp] = useState(false);
   const privacyHelpRef = useRef(null);
   const [privacyHelpHeight, setPrivacyHelpHeight] = useState("0px");
+  const photosRef = useRef(null);
+  const [photosHeight, setPhotosHeight] = useState("0px");
 
   useEffect(() => {
     if (showChatSettings && settingsRef.current) {
@@ -35,6 +37,14 @@ const Detail = ({ onClose }) => {
       );
     }
   }, [showPrivacyHelp]);
+
+  useEffect(() => {
+    if (photosRef.current) {
+      setPhotosHeight(
+        showPhotos ? `${photosRef.current.scrollHeight}px` : "0px"
+      );
+    }
+  }, [showPhotos]);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -63,7 +73,15 @@ const Detail = ({ onClose }) => {
   }, [chatId]);
 
   const togglePhotos = () => {
-    setShowPhotos((prev) => !prev);
+    setShowPhotos((prev) => {
+      const newState = !prev;
+      if (photosRef.current) {
+        setPhotosHeight(
+          newState ? `${photosRef.current.scrollHeight}px` : "0px"
+        );
+      }
+      return newState;
+    });
   };
 
   const getFilenameFromUrl = (imgUrl) => {
@@ -190,6 +208,7 @@ const Detail = ({ onClose }) => {
             <span>Clear chat history</span>
           </div>
         </div>
+
         <div className="option">
           <div
             className="title"
@@ -236,6 +255,7 @@ const Detail = ({ onClose }) => {
             <span>Support</span>
           </div>
         </div>
+
         <div className="option" onClick={togglePhotos}>
           <div className="title">
             <div className="photo-wrapper">
@@ -248,7 +268,17 @@ const Detail = ({ onClose }) => {
             />
           </div>
           <div
-            className={`photos ${showPhotos ? "visible" : ""}`}
+            className="photos"
+            ref={photosRef}
+            style={{
+              height: photosHeight,
+              opacity: showPhotos ? 1 : 0,
+              overflow: "hidden",
+              transition:
+                "height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease-in-out",
+              pointerEvents: showPhotos ? "auto" : "none",
+              visibility: showPhotos ? "visible" : "hidden",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {images.length === 0 ? (

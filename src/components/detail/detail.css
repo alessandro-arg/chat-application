@@ -83,15 +83,11 @@
       }
 
       .photos {
-        height: 150px;
-        overflow: hidden;
-        opacity: 0;
-        transform: translateY(-20px);
-        transition: all 0.3s ease-in-out;
         display: flex;
         flex-direction: column;
         margin-top: 15px;
-        cursor: default;
+        font-size: 14px;
+        transition: none;
 
         &::-webkit-scrollbar {
           width: 8px;
@@ -113,11 +109,6 @@
       }
 
       .photos.visible {
-        height: fit-content;
-        max-height: 200px;
-        overflow-y: auto;
-        opacity: 1;
-        transform: translateY(0);
         cursor: pointer;
       }
 
@@ -127,8 +118,7 @@
         align-items: center;
         background: transparent;
         padding: 10px;
-        border-radius: 4px;
-        background-color: rgba(17, 25, 40, 0.233);
+        border-bottom: solid 1px #dddddd35;
       }
 
       .photo-detail {
